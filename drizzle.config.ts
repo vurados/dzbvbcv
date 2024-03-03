@@ -1,4 +1,5 @@
 import type { Config } from "drizzle-kit";
+import 'dotenv/config'
 
 const turso_url = process.env.TURSO_DATABASE_URL || ""
 const auth_token = process.env.TURSO_AUTH_TOKEN || ""
@@ -12,8 +13,8 @@ if (auth_token ==  ""){
 }
 
 export default {
-  schema: "./drizzle/schema.ts",
-  out: "./drizzle/migrations",
+  schema: "./src/drizzle/schema/*",
+  out: "./src/drizzle/migrations",
   driver: "turso",
   dbCredentials: {
     url:  turso_url,

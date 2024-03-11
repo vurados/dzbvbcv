@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/libsql"
 import { createClient } from "@libsql/client"
+import { migrate } from "drizzle-orm/libsql/migrator";
 
 
 export const turso = createClient({
@@ -9,8 +10,7 @@ export const turso = createClient({
 
 export const db = drizzle(turso);
 
-// const migrateDB = async () => {
-//     await migrate(db, { migrationsFolder: 'src/drizzle/migrations' });
-// }
-
-// migrateDB()
+export const migrateDB = async () => {
+    console.log('migrating databse ...')
+    await migrate(db, { migrationsFolder: 'src/drizzle/migrations' });
+}

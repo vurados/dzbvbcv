@@ -1,9 +1,7 @@
 import 'dotenv/config'
 import {createServer} from './config/express.js'
 
-import {db, turso } from './connect_db.js'
-import { user } from './drizzle/schema/user.js'
-import { migrate } from 'drizzle-orm/libsql/migrator'
+import {db, turso, migrateDB } from './connect_db'
 
 
 const host = process.env.HOST || 'localhost'
@@ -19,4 +17,5 @@ const startServer = async () => {
     app.listen(port, () => console.info(`server running on port ${port}`))
 }
 
+migrateDB()
 startServer()

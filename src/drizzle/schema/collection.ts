@@ -3,15 +3,29 @@ import { users } from './user'
 import { notes } from './note'
 import { sql, relations } from "drizzle-orm";
 
+export type Collection = {
+    id: number;
+    userId?: number;
+    title?: string;
+    color?: string;
+    isEncrypted?: boolean;
+    cryptHash?: string;
+    createdAt?: string;
+}
 
 export const collections = sqliteTable("collection", {
     id: int("id").primaryKey({ autoIncrement: true }).unique().notNull(),
-    userId: int("userId").references(() => users.id),
+    userId: int("userId").references(() => users.id, {onDelete: "cascade"}),
     title: text('title').notNull(),
     color: text('color'),
+    isEncrypted: int('isEncrypted', { mode: 'boolean'}).default(false),
+    cryptHash: text('cryptHash'),
     createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`)
 })
 
+// ---------Relations--------------- //
+
+//User <==> Collections
 export const collectionUserRelations = relations(collections, ({ one }) => ({
     user: one(users, {
       fields: [collections.userId],
@@ -19,6 +33,8 @@ export const collectionUserRelations = relations(collections, ({ one }) => ({
     }),
 }))
 
+
+//Collection  <==> Note
 export const collectionNoteRelation = relations(collections, ({many}) => ({
     notes: many(notes)
 }))

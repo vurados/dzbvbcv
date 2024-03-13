@@ -25,7 +25,13 @@ export const updateNote = async (note: Note) => {
         .where(eq(notes.id, note.id ))
 }
 
-export const deleteNote = async (note: Note) => {
+export const deleteNote = async (noteId: number) => {
     await db.delete(notes)
-        .where(eq(notes.id, note.id ))
+        .where(eq(notes.id, noteId ))
+}
+
+export const getNotesByCId = async (collectionId: number) => {
+    return await db.query.notes.findMany({
+        where: eq(notes.collectionId, collectionId)
+    })
 }

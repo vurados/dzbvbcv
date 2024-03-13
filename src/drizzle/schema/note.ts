@@ -20,7 +20,7 @@ export const notes = sqliteTable("note", {
     collectionId: int("collectionId").references(() => collections.id, {onDelete: "cascade"}),
     title: text('title').notNull(),
     content: text('title').notNull(),
-    order: int('oreder').notNull(),
+    order: int('order').notNull(),
     width: int('width').default(1),
     height: int('height').default(1),
     createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`)

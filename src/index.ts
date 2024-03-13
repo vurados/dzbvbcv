@@ -5,7 +5,7 @@ import {db, turso, migrateDB } from './connect_db'
 
 
 const host = process.env.HOST || 'localhost'
-const port = process.env.DB_PORT || 3001
+const port = process.env.DB_PORT || 3001  //TODO: why it DB? Port? change to "PORT"
 
 const startServer = async () => {
     const app = await createServer()
@@ -17,5 +17,5 @@ const startServer = async () => {
     app.listen(port, () => console.info(`server running on port ${port}`))
 }
 
-migrateDB()
+// migrateDB()
 startServer()

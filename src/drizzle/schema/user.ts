@@ -9,7 +9,7 @@ export type User = {
     email?: string;
     password?: string;
     salt?: string;
-    createdAt?: string;
+    createdAt?: string | null;
 }
 
 export const users = sqliteTable("user", {

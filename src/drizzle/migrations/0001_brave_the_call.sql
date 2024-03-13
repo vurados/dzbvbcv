@@ -1,0 +1,1 @@
+ALTER TABLE `note` RENAME COLUMN `oreder` TO `order`;

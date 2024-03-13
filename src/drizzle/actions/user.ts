@@ -27,11 +27,24 @@ export const deleteUser = async (userId: number) => {
         .where(eq(users.id, userId ))
 }
 
-export const getUserByUsername = async (username: string) => {
-    return await db.query.users.findFirst({where: eq(users.username, username )})
-        
+export const getUserByUsername = async (username: string): Promise<User> => {
+    const user = await db.query.users.findFirst({where: eq(users.username, username )})
+    return new Promise((resolve, reject) => {
+        if(user){
+            resolve(user)
+        }else{
+            reject(new Error("ERROR: DB_QUERRY: No matches fonded. Wrong Username!"))
+        }
+    })
 }
 
-export const getUserById = async (userId: number) => {
-    return await db.query.users.findFirst({where: eq(users.id, userId )})
+export const getUserById = async (userId: number): Promise<User> => {
+    const user = await db.query.users.findFirst({where: eq(users.id, userId )})
+    return new Promise((resolve, reject) => {
+        if(user){
+            resolve(user)
+        }else{
+            reject(new Error("User id is not valid"))
+        }
+    })
 }

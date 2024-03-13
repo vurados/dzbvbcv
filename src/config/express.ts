@@ -18,8 +18,8 @@ const createServer = () => {
         res.status(200).send('Server us UP')
     })
 
-    // const apiRouter = require('./routes/Api')
-    // app.use('/api', apiRouter);
+    const apiRouter = require('./routes/Api')
+    app.use('/api', apiRouter);
 
     // const userRouter = require('./routes/Users');
     // apiRouter.use('/users', userRouter);

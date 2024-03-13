@@ -1,7 +1,8 @@
 import { genPassword, issueJWT, verifyPassword } from '../Authentification/passwordUtils'
 import passport from 'passport' 
 import express from 'express' 
-import {user} from "../drizzle/schema/schema"
+import { User } from '../drizzle/schema/user'
+import { getUserByUsername } from '../drizzle/actions/user'
 
 
 const router = express.Router()
@@ -15,7 +16,7 @@ router.get('/getUserFromJwt', passport.authenticate('jwt', {session: false}), as
 router.post('/login', async(req, res) => {
     const {username, password} = req.body
     
-    await User.findOne({where:{username: username}}).then((user) => {
+    await getUserByUsername(username).then((user: User) => {
         if (!user){
             res.status(401).json({success: false, msg: 'user with this username not found'})
         }

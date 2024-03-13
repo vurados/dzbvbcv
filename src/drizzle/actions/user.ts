@@ -16,14 +16,22 @@ export const createUser = async (userData: NewUser) => {
         .onConflictDoNothing()
 }
 
-
 export const updateUser = async (userData: User) => {
     await db.update(users)
         .set(userData)
         .where(eq(users.id, userData.id ))
 }
 
-export const deleteUser = async (userData: User) => {
+export const deleteUser = async (userId: number) => {
     await db.delete(users)
-        .where(eq(users.id, userData.id ))
+        .where(eq(users.id, userId ))
+}
+
+export const getUserByUsername = async (username: string) => {
+    return await db.query.users.findFirst({where: eq(users.username, username )})
+        
+}
+
+export const getUserById = async (userId: number) => {
+    return await db.query.users.findFirst({where: eq(users.id, userId )})
 }

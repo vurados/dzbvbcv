@@ -25,7 +25,20 @@ export const updateCollection = async (collection: Collection) => {
         .where(eq(collections.id, collection.id ))
 }
 
-export const deleteCollection = async (collection: Collection) => {
+export const deleteCollection = async (collectionId: number) => {
     await db.delete(collections)
-        .where(eq(collections.id, collection.id ))
+        .where(eq(collections.id, collectionId ))
+}
+
+export const getCollectionsByUID = async (uid: number) => {
+    await db .query.collections.findMany({
+        with: {
+            notes: {
+                limit: 5,
+                columns: {
+                    title: true
+                }
+            }
+        }
+    })
 }

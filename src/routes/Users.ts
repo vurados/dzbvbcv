@@ -2,7 +2,7 @@ import { genPassword, issueJWT, verifyPassword } from '../Authentification/passw
 import passport from 'passport' 
 import express from 'express' 
 import { User } from '../drizzle/schema/user'
-import { getUserByUsername } from '../drizzle/actions/user'
+import { createUser, getUserByUsername } from '../drizzle/actions/user'
 
 
 const router = express.Router()
@@ -45,7 +45,7 @@ router.post('/createUser', async(req, res) => {
     //         if(user){res.status(202).json({success: false, msg: 'User already exist'})}})
     //     .catch((err) => res.send(err))
     console.info('user=======>',user);
-    await User.create(user)
+    await createUser(user)
         .then((newUser) => {
             const jwt = issueJWT(newUser)
             res.cookie('jwt', jwt, {maxAge:86400000, httpOnly: true})

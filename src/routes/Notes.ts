@@ -1,10 +1,9 @@
-const express = require('express');
+import express from 'express'
+import passport from 'passport'
+import {checkOwner} from '../Authentification/checkOwner'
+
+
 const router = express.Router();
-const {Note, User, Layout} = require("../models")
-const passport = require('passport');
-const {checkOwner} = require('../Authentification/checkOwner')
-
-
 
 router.post('/getNotesByLayoutId/:id', passport.authenticate('jwt', {session: false}), async(req, res) => {
     const userId = req.user.id

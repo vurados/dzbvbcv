@@ -5,7 +5,6 @@ import { Collection } from "../schema/collection";
 
 
 type NewCollection = {
-    id: number;
     userId: number;
     title: string;
     color?: string;
@@ -30,7 +29,7 @@ export const deleteCollection = async (collectionId: number) => {
         .where(eq(collections.id, collectionId ))
 }
 
-export const getCollectionsByUID = async (uid: number) => {
+export const getCollectionsTileInfoByUID = async (uid: number) => {
     await db .query.collections.findMany({
         with: {
             notes: {
@@ -39,6 +38,14 @@ export const getCollectionsByUID = async (uid: number) => {
                     title: true
                 }
             }
+        }
+    })
+}
+
+export const getCollectionsForExport = async (uid: number) => {
+    await db .query.collections.findMany({
+        with: {
+            notes: true
         }
     })
 }

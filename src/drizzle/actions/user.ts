@@ -11,10 +11,17 @@ type NewUser = {
 }
 
 export const createUser = async (userData: NewUser) => {
-    await db.insert(users)
-        .values(userData)
-        .onConflictDoNothing()
+    return new Promise((resolve, reject) => {
+        if(userData.username && userData.email && userData.password && userData.salt){
+            resolve(db.insert(users)
+                .values(userData)
+                .onConflictDoNothing())
+        }else{
+            reject(new Error("ERROR: createUser: db.insert"))
+        }
+    })
 }
+    
 
 export const updateUser = async (userData: User) => {
     await db.update(users)

@@ -5,7 +5,6 @@ import { Note } from "../schema/note";
 
 
 type NewNote = {
-    id: number;
     title: string;
     content: string;
     order: number;

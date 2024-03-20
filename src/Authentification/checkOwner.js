@@ -7,7 +7,7 @@ const checkOwner = (Model) => async (req, res, next) => {
             record = await Model.findByPk(req.params.id, {
                 include:[
                     {
-                        model:Layout,
+                        model: Layout,
                         as: 'Layout',
                         include: {
                             model: User,

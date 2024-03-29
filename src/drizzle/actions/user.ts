@@ -3,12 +3,13 @@ import { db } from "../../connect_db"
 import { users } from "../schema/user";
 import { User } from "../schema/user";
 
-type NewUser = {
+export type NewUser = {
     username: string;
     email: string;
     password: string;
     salt: string;
 }
+
 
 export const createUser = async (userData: NewUser) => {
     return new Promise((resolve, reject) => {
@@ -21,13 +22,13 @@ export const createUser = async (userData: NewUser) => {
         }
     })
 }
-    
 
-export const updateUser = async (userData: User) => {
+export const updateUser = async  (userData: User) => {
     await db.update(users)
         .set(userData)
         .where(eq(users.id, userData.id ))
 }
+
 
 export const deleteUser = async (userId: number) => {
     await db.delete(users)

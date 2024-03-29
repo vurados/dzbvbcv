@@ -13,6 +13,11 @@ const Strategy = require('passport-jwt').Strategy
 const pathToKey = path.join(__dirname, '..', 'Authentification/id_rsa_pub.pem') //im hardcoded this because it gives Serever/id_rsa_pub path TODO
 const PUB_KEY = fs.readFileSync(pathToKey, 'utf8')
 
+export type Payload = {
+    sub: number,
+    iat: number
+}
+
 const cookieExtractor = function(req: any) {
     // console.log('req.cookie from cookie extractor:  ',req.cookies);
     let token = null;
@@ -31,7 +36,7 @@ const options = {
 }
 
 export default (passport: PassportStatic) => {
-    passport.use(new Strategy(options, (req: any, payload: any, done: any) => {
+    passport.use(new Strategy(options, (req: any, payload: Payload, done: any) => {
         console.info("🚀 ~ file: pasport_jwt.js:31 ~ strategy ~ payload:", JSON.stringify(payload))
         getUserById(payload.sub).then((user) => {
             if(user){

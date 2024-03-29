@@ -1,15 +1,16 @@
-const crypto = require("crypto")
-const jwt = require('jsonwebtoken')
-const path = require("path")
-const fs = require('fs')
+import { User } from "../drizzle/schema/user";
+
+import crypto from "crypto"
+import jwt from 'jsonwebtoken'
+import path from "path"
+import fs from 'fs'
+import { Payload } from "./pasport_jwt";
 
 const pathToKey = path.join(__dirname, '..', 'Authentification/id_rsa_priv.pem');
 const PRIV_KEY = fs.readFileSync(pathToKey, 'utf8');
 
-export type payload = {
-    sub: number,
-    iat: string
-}
+
+
 
 const genPassword = (password: string) => {
     const salt = crypto.randomBytes(32).toString('hex')
@@ -23,12 +24,12 @@ const verifyPassword = (password: string, hash: string, salt: string) => {
     return (hash === verHash)
 }
 
-const issueJWT = (user) => {
+const issueJWT = (user: User) => {
     const id = user.id
 
     const expiresIn = '1d'
   
-    const payload = {
+    const payload: Payload  = {
       sub: id,
       iat: Date.now()
     }

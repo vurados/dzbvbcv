@@ -33,4 +33,6 @@ export const getNotesByCId = async (collectionId: number) => {
     return await db.query.notes.findMany({
         where: eq(notes.collectionId, collectionId)
     })
+
+
 }

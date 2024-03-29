@@ -11,12 +11,14 @@ CREATE TABLE `collection` (
 --> statement-breakpoint
 CREATE TABLE `note` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`userId` integer,
 	`collectionId` integer,
 	`title` text NOT NULL,
-	`oreder` integer NOT NULL,
+	`order` integer NOT NULL,
 	`width` integer DEFAULT 1,
 	`height` integer DEFAULT 1,
 	`createdAt` text DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade,
 	FOREIGN KEY (`collectionId`) REFERENCES `collection`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint

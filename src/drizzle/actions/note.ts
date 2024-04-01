@@ -13,19 +13,19 @@ type NewNote = {
 }
 
 export const createNote = async (note: NewNote) => {
-    await db.insert(notes)
+    return await db.insert(notes)
         .values(note)
         .onConflictDoNothing()
 }
 
 export const updateNote = async (note: Note) => {
-    await db.update(notes)
+    return await db.update(notes)
         .set(note)
         .where(eq(notes.id, note.id ))
 }
 
 export const deleteNote = async (noteId: number) => {
-    await db.delete(notes)
+    return await db.delete(notes)
         .where(eq(notes.id, noteId ))
 }
 

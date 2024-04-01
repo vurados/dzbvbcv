@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "af5ba84a-d2d5-4c41-9cff-1240de3c70d6",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "954011cb-e382-492a-9cce-6a29a52d051d",
+  "prevId": "4d9256ef-a63c-48b6-a378-2c68ca74818e",
   "tables": {
     "collection": {
       "name": "collection",
@@ -96,6 +96,13 @@
           "notNull": true,
           "autoincrement": true
         },
+        "userId": {
+          "name": "userId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "collectionId": {
           "name": "collectionId",
           "type": "integer",
@@ -110,8 +117,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "oreder": {
-          "name": "oreder",
+        "order": {
+          "name": "order",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -152,6 +159,19 @@
         }
       },
       "foreignKeys": {
+        "note_userId_user_id_fk": {
+          "name": "note_userId_user_id_fk",
+          "tableFrom": "note",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "note_collectionId_collection_id_fk": {
           "name": "note_collectionId_collection_id_fk",
           "tableFrom": "note",
@@ -221,6 +241,13 @@
           "name": "user_id_unique",
           "columns": [
             "id"
+          ],
+          "isUnique": true
+        },
+        "user_username_unique": {
+          "name": "user_username_unique",
+          "columns": [
+            "username"
           ],
           "isUnique": true
         },

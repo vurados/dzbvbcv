@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "af5ba84a-d2d5-4c41-9cff-1240de3c70d6",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "3416e1e4-e018-46ed-9438-317e32080b1b",
+  "prevId": "af5ba84a-d2d5-4c41-9cff-1240de3c70d6",
   "tables": {
     "collection": {
       "name": "collection",
@@ -110,8 +110,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "oreder": {
-          "name": "oreder",
+        "order": {
+          "name": "order",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -241,6 +241,8 @@
   "_meta": {
     "schemas": {},
     "tables": {},
-    "columns": {}
+    "columns": {
+      "\"note\".\"oreder\"": "\"note\".\"order\""
+    }
   }
 }

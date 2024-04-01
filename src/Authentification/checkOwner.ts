@@ -4,7 +4,7 @@ import { getNotesByCId } from "../drizzle/actions/note";
 
 type Model = "Note" | "Collection"
 
-const checkOwner = (model: Model) => async (req: any, res: any, next: any) => {
+export const checkOwner = (model: Model) => async (req: any, res: any, next: any) => {
     try {
         let record
         switch (model) {
@@ -21,12 +21,12 @@ const checkOwner = (model: Model) => async (req: any, res: any, next: any) => {
         if (record){
             const recordOwner = record[0].userId
             if(recordOwner !== req.user.id){
-                return res.status(403).send('Access denied, you dont own a record')
+                res.status(403).send('Access denied, you dont own a record')
             }
         }
 
         if(!record){
-            return res.status(401).send('resource not found')
+            res.status(401).send('resource not found')
         }
 
         req.record = record
@@ -37,5 +37,3 @@ const checkOwner = (model: Model) => async (req: any, res: any, next: any) => {
         res.status(500).send('Server busy handling your problems, so you dont have to')
     }
 }
-
-module.exports = {checkOwner}

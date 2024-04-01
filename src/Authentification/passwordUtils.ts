@@ -6,7 +6,10 @@ import path from "path"
 import fs from 'fs'
 import { Payload } from "./pasport_jwt";
 
-const pathToKey = path.join(__dirname, '..', 'Authentification/id_rsa_priv.pem');
+const __filename = new URL(import.meta.url).pathname;
+const __dirname = path.dirname(__filename);
+
+const pathToKey = path.join(__dirname.slice(1), 'id_rsa_priv.pem');
 const PRIV_KEY = fs.readFileSync(pathToKey, 'utf8');
 
 
@@ -24,13 +27,11 @@ const verifyPassword = (password: string, hash: string, salt: string) => {
     return (hash === verHash)
 }
 
-const issueJWT = (user: User) => {
-    const id = user.id
-
+const issueJWT = (userId: bigint) => {
     const expiresIn = '1d'
-  
+    console.log("issueJWT called for user:", userId)
     const payload: Payload  = {
-      sub: id,
+      sub: 2,
       iat: Date.now()
     }
   
@@ -42,4 +43,4 @@ const issueJWT = (user: User) => {
     }
   }
 
-module.exports = {genPassword, verifyPassword, issueJWT}
+export {genPassword, verifyPassword, issueJWT}

@@ -14,7 +14,7 @@ export type User = {
 
 export const users = sqliteTable("user", {
     id: int("id").primaryKey({ autoIncrement: true }).unique().notNull(),
-    username: text('username').notNull(),
+    username: text('username').unique().notNull(),
     email: text('email').unique().notNull(),
     password: text('password').notNull(),
     salt: text('salt').notNull(),

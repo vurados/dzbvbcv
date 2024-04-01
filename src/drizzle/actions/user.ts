@@ -11,19 +11,27 @@ export type NewUser = {
 }
 
 
-export const createUser = async (userData: NewUser) => {
-    return new Promise((resolve, reject) => {
+export const createUser = async (userData: NewUser): Promise<bigint> => {
+    return new Promise(async (resolve, reject) => {
         if(userData.username && userData.email && userData.password && userData.salt){
-            resolve(db.insert(users)
+            const onInsertData = await db.insert(users)
                 .values(userData)
-                .onConflictDoNothing())
+                .onConflictDoNothing()
+            console.log("onInsertData", onInsertData)
+            if (onInsertData.rowsAffected === 0){
+                reject(new Error("ERROR: User data insertion failed, probable cause - username or email already exists"))
+            }
+            if(onInsertData.lastInsertRowid){
+                resolve(onInsertData.lastInsertRowid)
+            }
         }else{
             reject(new Error("ERROR: createUser: db.insert"))
         }
     })
 }
 
-export const updateUser = async  (userData: User) => {
+
+export const updateUser = async (userData: User) => {
     await db.update(users)
         .set(userData)
         .where(eq(users.id, userData.id ))
@@ -37,6 +45,7 @@ export const deleteUser = async (userId: number) => {
 
 export const getUserByUsername = async (username: string): Promise<User> => {
     const user = await db.query.users.findFirst({where: eq(users.username, username )})
+    console.log("user in getUserByUsername ", user)
     return new Promise((resolve, reject) => {
         if(user){
             resolve(user)

@@ -8,9 +8,14 @@ import { getUserById } from '../drizzle/actions/user'
 // const JwtStrategy = require('passport-jwt').Strategy
 // const ExtractJwt = require('passport-jwt').ExtractJwt
 
-const Strategy = require('passport-jwt').Strategy
+import JwtPassport, { StrategyOptionsWithoutRequest } from 'passport-jwt'
+const JwtStrategy = JwtPassport.Strategy
+// const Strategy = require('passport-jwt').Strategy
 
-const pathToKey = path.join(__dirname, '..', 'Authentification/id_rsa_pub.pem') //im hardcoded this because it gives Serever/id_rsa_pub path TODO
+const __filename = new URL(import.meta.url).pathname;
+const __dirname = path.dirname(__filename);
+
+const pathToKey = path.join(__dirname.slice(1), 'id_rsa_pub.pem')
 const PUB_KEY = fs.readFileSync(pathToKey, 'utf8')
 
 export type Payload = {
@@ -28,15 +33,14 @@ const cookieExtractor = function(req: any) {
     return token;
 };
 
-const options = {
-    jwtFromRequest: cookieExtractor,
+const options: StrategyOptionsWithoutRequest = {
     secretOrKey: PUB_KEY,
-    algorithms: ['RS256'],
-    passReqToCallback: true
+    jwtFromRequest: cookieExtractor,
+    algorithms: ['RS256']
 }
 
 export default (passport: PassportStatic) => {
-    passport.use(new Strategy(options, (req: any, payload: Payload, done: any) => {
+    passport.use(new JwtStrategy(options, (req: any, payload: Payload, done: any) => {
         console.info("🚀 ~ file: pasport_jwt.js:31 ~ strategy ~ payload:", JSON.stringify(payload))
         getUserById(payload.sub).then((user) => {
             if(user){

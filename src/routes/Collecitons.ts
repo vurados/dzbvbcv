@@ -1,14 +1,14 @@
 import express from 'express';
 import passport from 'passport'
-import { checkOwner } from '../Authentification/checkOwner'
-import { createCollection, deleteCollection, getCollectionsForExport, getCollectionsTileInfoByUID, updateCollection } from '../drizzle/actions/collection';
+import  {checkOwner}  from '../Authentification/checkOwner'
+import { createCollection, deleteCollection, getAllCollectionsForExport, getCollectionsTilesByUID, updateCollection } from '../drizzle/actions/collection';
 
 
 const router = express.Router();
 
 router.get('/exportAll', passport.authenticate('jwt', {session: false}), async(req, res) => {
     const userId = req.user.id
-    await getCollectionsForExport(userId)
+    await getAllCollectionsForExport(userId)
         .then((collectionsWithNotes) => {res.json(collectionsWithNotes)})
         .catch((err) => {res.status(402).json(err)})
     
@@ -20,7 +20,7 @@ router.get('/getLayouts', passport.authenticate('jwt', {session: false}),async (
     // const user = await User.findByPk(userId)
     const userId = req.user.id
     if(userId){
-        await getCollectionsTileInfoByUID(userId)
+        await getCollectionsTilesByUID(userId)
             .then((listOfCollections) => {res.json(listOfCollections)})
             .catch((err) => {res.status(400).json(err)})
     }
@@ -38,7 +38,7 @@ router.post('/createCollection', passport.authenticate('jwt', {session: false}),
     
 })
 
-router.put('/changeCollection/:id', passport.authenticate('jwt', {session: false}), checkOwner(Layout), async (req, res) => {
+router.put('/changeCollection/:id', passport.authenticate('jwt', {session: false}), checkOwner('Collection'), async (req, res) => {
     // const collection = req.record
     const newCollection = {...req.body, id: req.record.id}
     await updateCollection(newCollection)
@@ -46,7 +46,7 @@ router.put('/changeCollection/:id', passport.authenticate('jwt', {session: false
         .catch((err) => res.status(418).send(err))
 })
 
-router.delete('/deleteCollection/:id', passport.authenticate('jwt', {session: false}),checkOwner(Layout), async (req, res) => {
+router.delete('/deleteCollection/:id', passport.authenticate('jwt', {session: false}),checkOwner('Collection'), async (req, res) => {
     // const collectionId = req.params.id
     // const userId = req.user.id
     // const user = await User.findOne({where: {id: userId}})
@@ -67,4 +67,4 @@ router.delete('/deleteCollection/:id', passport.authenticate('jwt', {session: fa
 })
 
 
-module.exports = router;
+export default router;

@@ -4,6 +4,10 @@ import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import compression from 'compression'
 
+import apiRouter from '../routes/Api'
+import userRouter from '../routes/Users'
+import collectionRouter from '../routes/Collecitons'
+import noteRouter from '../routes/Notes'
 
 const createServer = () => {
     const app = express()
@@ -18,16 +22,12 @@ const createServer = () => {
         res.status(200).send('Server us UP')
     })
 
-    const apiRouter = require('./routes/Api')
     app.use('/api', apiRouter);
 
-    const userRouter = require('./routes/Users');
     apiRouter.use('/users', userRouter);
 
-    const layoutRouter = require('./routes/Layouts');
-    apiRouter.use('/layouts', layoutRouter);
+    apiRouter.use('/layouts', collectionRouter);
 
-    const noteRouter = require('./routes/Notes');
     apiRouter.use('/notes', noteRouter);
 
     return app

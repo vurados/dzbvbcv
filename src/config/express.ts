@@ -1,6 +1,6 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
-// import passport from 'passport'
+import passport from 'passport'
 import helmet from 'helmet'
 import compression from 'compression'
 
@@ -9,8 +9,13 @@ import userRouter from '../routes/Users'
 import collectionRouter from '../routes/Collecitons'
 import noteRouter from '../routes/Notes'
 
+import jwtPassport from '../Authentification/pasport_jwt'
+
 const createServer = () => {
     const app = express()
+
+    jwtPassport(passport)
+    app.use(passport.initialize())
 
     app.use(helmet())
     app.use(compression())
@@ -26,7 +31,7 @@ const createServer = () => {
 
     apiRouter.use('/users', userRouter);
 
-    apiRouter.use('/layouts', collectionRouter);
+    apiRouter.use('/collections', collectionRouter);
 
     apiRouter.use('/notes', noteRouter);
 

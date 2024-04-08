@@ -8,7 +8,8 @@ import { getUserById } from '../drizzle/actions/user'
 // const JwtStrategy = require('passport-jwt').Strategy
 // const ExtractJwt = require('passport-jwt').ExtractJwt
 
-import JwtPassport, { StrategyOptionsWithoutRequest } from 'passport-jwt'
+import JwtPassport, { StrategyOptionsWithRequest } from 'passport-jwt'
+import { User } from '../drizzle/schema/user'
 const JwtStrategy = JwtPassport.Strategy
 // const Strategy = require('passport-jwt').Strategy
 
@@ -25,29 +26,30 @@ export type Payload = {
 
 const cookieExtractor = function(req: any) {
     // console.log('req.cookie from cookie extractor:  ',req.cookies);
-    let token = null;
-    if (req && req.cookies) {
-        token = req.cookies['jwt'].token;
-        // console.log('token from cookieextractor:  ', token);
+    let token = null
+    if (req && req.cookies['jwt']?.token) {
+        token = req.cookies['jwt'].token
     }
     return token;
 };
 
-const options: StrategyOptionsWithoutRequest = {
+const options: StrategyOptionsWithRequest = {
     secretOrKey: PUB_KEY,
     jwtFromRequest: cookieExtractor,
-    algorithms: ['RS256']
+    algorithms: ['RS256'],
+    passReqToCallback: true
+    // jsonWebTokenOptions: {user: {id:0, username: ''}}
 }
 
 export default (passport: PassportStatic) => {
     passport.use(new JwtStrategy(options, (req: any, payload: Payload, done: any) => {
         console.info("🚀 ~ file: pasport_jwt.js:31 ~ strategy ~ payload:", JSON.stringify(payload))
-        getUserById(payload.sub).then((user) => {
+        getUserById(payload.sub).then((user: User) => {
             if(user){
-                req.user = user
-                return done(null, user)
+                // req.user = user
+                done(null, user)
             }else{
-                return done(null, false)
+                done(null, false)
             }
         }).catch((err) => {
             console.error(err);

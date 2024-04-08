@@ -17,7 +17,7 @@ export const collections = sqliteTable("collection", {
     id: int("id").primaryKey({ autoIncrement: true }).unique().notNull(),
     userId: int("userId").references(() => users.id, {onDelete: "cascade"}),
     title: text('title').notNull(),
-    color: text('color'),
+    color: text('color').default('#ffffff'),
     isEncrypted: int('isEncrypted', { mode: 'boolean'}).default(false),
     cryptHash: text('cryptHash'),
     createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`)

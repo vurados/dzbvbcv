@@ -31,7 +31,7 @@ const issueJWT = (userId: bigint) => {
     const expiresIn = '1d'
     console.log("issueJWT called for user:", userId)
     const payload: Payload  = {
-      sub: 2,
+      sub: Number(userId),
       iat: Date.now()
     }
   

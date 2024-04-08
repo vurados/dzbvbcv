@@ -1,55 +1,73 @@
 import express from 'express'
 import passport from 'passport'
-import {checkOwner} from '../Authentification/checkOwner'
-import { createNote, deleteNote, getNotesByCId, updateNote } from '../drizzle/actions/note';
-
+import { createNote, deleteNote, getNoteById, getNotesByCId, updateNote } from '../drizzle/actions/note';
+import { User } from '../drizzle/schema/user';
+import { Note } from '../drizzle/schema/note';
 
 const router = express.Router();
 
-router.post('/getNotesByLayoutId/:id', passport.authenticate('jwt', {session: false}), async(req, res) => {
-    const userId: number = req.user.id  // userId from passport middleware
-    // console.log("🚀 ~ file: Notes.js:8 ~ router.get ~ userId:", userId)
-    const cid = +req.params.id
-    // console.log("🚀 ~ file: Notes.js:10 ~ router.post ~ lid:", lid)
+router.post('/getNotesByCollectionId/:cid', passport.authenticate('jwt', {session: false}), async(req, res) => {
+    const userId: number = (req.user as User).id  // userId from passport middleware
     
-    // const user = await User.findAll({where:{id:userId}, include:{model:Layout, as: 'Layout', where:{id:lid}, include:{model:Note, as: 'Note'}}})
-    // console.log("🚀 ~ file: Notes.js:12 ~ router.post ~ user:", JSON.stringify(user[0].Layout[0].Note))
-    // const noteees = user[0].Layout[0].Note
-    
-    const notes = await getNotesByCId(cid)
+    const notes = await getNotesByCId(+req.params.cid) as Note[]
     if(notes[0].userId === userId){
-        res.json(notes)
-        // console.log("🚀 ~ file: Notes.js:17 ~ router.post ~ notes:", notes.dataValues)
+        res.status(200).json(notes)
+    }else{
+        res.status(403).send('Access denied, notes not owned by you')
     }
 });
 
-router.post('/getNote/:id', passport.authenticate('jwt', {session: false}), checkOwner('Note'), async(req, res) => {
-    // req.record contains note(:id) and gotten from checkOwner middleware
-    res.json(req.record)
+router.post('/getNote/:id', passport.authenticate('jwt', {session: false}), async(req, res) => {
+    const userId: number = (req.user as User).id
+    const note = await getNoteById(+req.params.id) as Note
+
+    if(note.userId === userId){
+        res.status(200).json(note)
+    }else{
+        res.status(403).send('Access denied, note not owned by you')
+    }
 })
 
-router.post('/createNote/:id', passport.authenticate('jwt', {session: false}), async(req, res) => {
+router.post('/createNote/:cid', passport.authenticate('jwt', {session: false}), async(req, res) => {
     // FIXME: fix
-    const note = {...req.body,"userId": req.user.id, "collectionId": req.params.id,  "x": 3, "y": 1, "width": 1, "height": 1, }
-    console.log("🚀 ~ file: Notes.js:33 ~ router.post ~ note:", note)
-    await createNote(note)
-    res.status(200).json(note)
+    const userId: number = (req.user as User).id
+    const note = {"userId": userId, "collectionId": req.params.cid, ...req.body}
+    console.log("I am hereeeeeeeeeeeeeeeeeee");
     
+    // console.log("🚀 ~ file: Notes.js:33 ~ router.post ~ note:", note)
+    await createNote(note)
+        .then((note) => res.status(200).json(note))
+        .catch((err) => res.status(403).send(err.message))
 });
 
-router.put('/changeNote/:id', passport.authenticate('jwt', {session: false}), async(req, res) => {
-    const nid = req.params.id
-    const newNote = req.body
-    // console.log("🚀 ~ file: Notes.js:49 ~ router.put ~ newNote:", newNote)
-    await updateNote(newNote)
-    res.status(200).json(newNote)
+router.put('/changeNote/:nid', passport.authenticate('jwt', {session: false}), async(req, res) => {
+    const userId: number = (req.user as User).id
+    const nid = +req.params.nid
+
+    const noteUserId = (await getNoteById(nid) as Note).userId
+    if(userId === noteUserId){
+        const newNote = {...req.body, id: nid}
+        // console.log("🚀 ~ file: Notes.js:49 ~ router.put ~ newNote:", newNote)
+        await updateNote(newNote)
+        res.status(200).json(newNote)
+    }else{
+        res.status(403).send('Access denied, note not owned by you')
+    }
 });
 
-router.delete('/deleteNote/:id', passport.authenticate('jwt', {session: false}), checkOwner('Note'), async(req, res) => {
-    const noteId = +req.params.id
+router.delete('/deleteNote', passport.authenticate('jwt', {session: false}), async(req, res) => {
+    const userId: number = (req.user as User).id
+    const noteId = +(req.query.nid || 0)
+
+    const noteUserId = (await getNoteById(noteId) as Note).userId
     // console.log("🚀 ~ file: Notes.js:45 ~ router.delete ~ record:", record)
-    await deleteNote(noteId)
-    res.send(`Note ${noteId} was deleted successfully`)
+    if(userId === noteUserId){
+        await deleteNote(+noteId)
+            .then((msg) => res.status(200).send(msg))
+            .catch((err) => res.status(403).send(err.message))
+    }else{
+        res.status(403).send('Access denied, note not owned by you')
+    }
 })
 
 export default router;

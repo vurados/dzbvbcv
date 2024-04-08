@@ -7,6 +7,7 @@
   "scripts": {
     "generate": "drizzle-kit generate:sqlite",
     "push": "drizzle-kit push:sqlite",
+    "migrate": "tsx ./src/migrate.ts",
     "start": "tsx watch src/index.ts",
     "build": "tsc",
     "test": "test"

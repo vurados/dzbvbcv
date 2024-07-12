@@ -6,15 +6,15 @@ import { createClient } from "@libsql/client"
 import { migrate } from "drizzle-orm/libsql/migrator";
 
 
-export const turso = createClient({
+const turso = createClient({
     url: process.env.TURSO_DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    authToken: process.env.TURSO_AUTH_TOKEN
 })
 
-export const db = drizzle(turso, {schema: {...users, ...collections, ...notes}});
+const db = drizzle(turso, {schema: {...users, ...collections, ...notes}})
 
-export const migrateDB = async () => {
-    console.log('migrating databse ...')
+const migrateDB = async () => {
+    console.log('migrating database ...')
     await migrate(db, { migrationsFolder: 'src/drizzle/migrations' });
 }
 

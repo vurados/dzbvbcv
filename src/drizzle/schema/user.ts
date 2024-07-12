@@ -18,7 +18,7 @@ export const users = sqliteTable("user", {
     email: text('email').unique().notNull(),
     password: text('password').notNull(),
     salt: text('salt').notNull(),
-    createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`)
+    createdAt: int('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
 
 export const userCollectionRelation = relations(users, ({many}) => ({

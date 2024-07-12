@@ -20,7 +20,7 @@ export const collections = sqliteTable("collection", {
     color: text('color').default('#ffffff'),
     isEncrypted: int('isEncrypted', { mode: 'boolean'}).default(false),
     cryptHash: text('cryptHash'),
-    createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`)
+    createdAt: int('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
 
 // ---------Relations--------------- //

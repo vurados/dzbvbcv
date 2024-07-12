@@ -23,10 +23,10 @@ export const notes = sqliteTable("note", {
     collectionId: int("collectionId").references(() => collections.id, {onDelete: "cascade"}),
     title: text('title').notNull(),
     content: text('title').notNull(),
-    order: int('order').notNull(),
-    width: int('width').default(1),
-    height: int('height').default(1),
-    createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`)
+    order: int('order').notNull().default(1),
+    width: int('width').notNull().default(1),
+    height: int('height').notNull().default(1),
+    createdAt: int('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`)
 })
 
 export const collectionUserRelations = relations(notes, ({ one }) => ({
